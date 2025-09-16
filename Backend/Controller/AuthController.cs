@@ -42,7 +42,8 @@ namespace Backend.Controller
             var res = _hasher.VerifyHashedPassword(user, user.PasswordHash, login.Password);
             if (res == PasswordVerificationResult.Failed) return Unauthorized();
             var token = identityService.GenerateToken(user);
-            return ReturnOk(token);
+            var authResponse = new { token = token, user = user };
+            return ReturnOk(authResponse);
         }
     }
 }

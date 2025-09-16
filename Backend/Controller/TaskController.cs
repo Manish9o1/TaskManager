@@ -47,12 +47,17 @@ namespace Backend.Controller
             return ReturnOk(TaskList);
         }
 
-        [HttpPost]
+        [HttpGet("GetUser")]       
+        public async Task<IActionResult> GetUser()
+        {
+            var users = await context.Users.Select(x => new { x.Id, x.Username, x.Email }).ToListAsync();
+            return ReturnOk(users);
+        }
         public async Task<IActionResult> Create(CreateTask createTask)
         {
 
             var userId = GetUserId();
-            if (await context.Users.FindAsync(createTask.AssigneeId) == null) return ReturnBadRequest(new List<string> { "Invalid Assignee User Id" });
+            //if (await context.Users.FindAsync(createTask.AssigneeId) == null) return ReturnBadRequest(new List<string> { "Invalid Assignee User Id" });
             var task = new TaskItem { Title = createTask.Title, Description = createTask.Description, Priority = createTask.Priority, CreatorId = userId, AssigneeId = createTask.AssigneeId };
             context.Tasks.Add(task);
             await context.SaveChangesAsync();
